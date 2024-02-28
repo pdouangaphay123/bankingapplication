@@ -1,9 +1,9 @@
-package Service;
+package com.bankingapp.bankingapplication.Service;
 
-import CustomException.EmailExistsInDbException;
-import CustomException.InvalidEmailPasswordException;
-import Model.User;
-import Repository.UserRepository;
+import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
+import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
+import com.bankingapp.bankingapplication.Model.User;
+import com.bankingapp.bankingapplication.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +24,17 @@ public class UserService {
     public User createUser(User user) {
         if (user.getEmail() != null && user.getPassword() != null &&
                 validateEmail(user.getEmail()) && validatePassword(user.getPassword())) {
-            if (!userRepository.existsById(user.getUserId())) {
+            if (!user.getEmail().equals(userRepository.findByEmail(user.getEmail()))) {
                 return userRepository.save(user);
             }
-                throw new EmailExistsInDbException("coolio");
+            else throw new EmailExistsInDbException("coolio");
         }
         throw new InvalidEmailPasswordException("hi mom");
+    }
+
+    public User loginUser(User user){
+
+        return user;
     }
 
 
@@ -48,7 +53,6 @@ public class UserService {
             if (email == null || !validateEmailId(email)) { // validates for if null email
                 return false;
             }
-
             return true;
         }
 

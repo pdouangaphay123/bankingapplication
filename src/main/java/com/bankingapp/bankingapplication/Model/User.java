@@ -1,4 +1,4 @@
-package Model;
+package com.bankingapp.bankingapplication.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,7 @@ public class User {
     @Id // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private int userId;
+    @Column(unique=true)
     private String email;
     private String password;
 
