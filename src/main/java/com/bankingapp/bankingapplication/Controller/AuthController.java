@@ -1,10 +1,10 @@
-package Controller;
+package com.bankingapp.bankingapplication.Controller;
 
-import CustomException.EmailExistsInDbException;
-import CustomException.InvalidEmailPasswordException;
+import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
+import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
 
-import Model.User;
-import Service.UserService;
+import com.bankingapp.bankingapplication.Model.User;
+import com.bankingapp.bankingapplication.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +19,7 @@ public class AuthController {
 
     @Autowired
     public AuthController(UserService userService){ this.userService = userService;}
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user){
         try {
