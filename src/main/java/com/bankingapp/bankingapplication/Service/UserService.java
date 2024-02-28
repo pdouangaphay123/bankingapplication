@@ -2,11 +2,13 @@ package com.bankingapp.bankingapplication.Service;
 
 import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
 import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
+import com.bankingapp.bankingapplication.DTO.LoginCreds;
 import com.bankingapp.bankingapplication.Model.User;
 import com.bankingapp.bankingapplication.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +34,12 @@ public class UserService {
         throw new InvalidEmailPasswordException("hi mom");
     }
 
-    public User loginUser(User user){
-
-        return user;
+    public User loginUser(LoginCreds loginCreds){
+            User loggedUser = userRepository.findByEmail(loginCreds.getEmail());
+            if (loggedUser != null && Objects.equals(loggedUser.getPassword(), loginCreds.getPassword())){
+                return loggedUser;
+            }
+            throw new InvalidEmailPasswordException("yeet");
     }
 
 
