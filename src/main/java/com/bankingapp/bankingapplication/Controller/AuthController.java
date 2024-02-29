@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
     allowedHeaders = "*", exposedHeaders = "*", allowCredentials = "true", maxAge = 244444)
 public class AuthController {
 
-    final AuthService authService;
+    private final AuthService authService;
 
     private User sessionUser;
 

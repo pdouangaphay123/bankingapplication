@@ -1,14 +1,13 @@
 package com.bankingapp.bankingapplication.Service;
 
 import com.bankingapp.bankingapplication.Controller.AuthController;
+import com.bankingapp.bankingapplication.DTO.AmountDepositWithdraw;
 import com.bankingapp.bankingapplication.Model.Account;
 import com.bankingapp.bankingapplication.Repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
@@ -29,22 +28,33 @@ public class AccountService {
     }
 
 
-    public Account checkBalance(Account account){
+    public Account checkBalance(Account account) {
 
-        ExampleMatcher userIdMatcher = ExampleMatcher.matching() // checking userId existence in repo
-                .withIgnorePaths("accountId")
-                .withMatcher("userId", ignoreCase());
-        account.setUserId(authController.getSessionUserId());
-        Example<Account> example = Example.of(account, userIdMatcher);
-
-        if(accountRepository.exists(example)) {
-            account.setUserId(authController.getSessionUserId());
             account = accountRepository.getByUserId(authController.getSessionUserId());
 
             return account;
-        }
-        else {
-            return null; // need a custom exception in place
-        }
+
     }
+
+    public Account updateDeposit(AmountDepositWithdraw amount, Account account) {
+
+        account = accountRepository.getByUserId(authController.getSessionUserId());
+
+        account.setBalance(account.getBalance() - amount.getAmount());
+
+        return accountRepository.save(account);
+    }
+
+    public Account updateWithdraw(AmountDepositWithdraw amount, Account account) {
+
+        account = accountRepository.getByUserId(authController.getSessionUserId());
+        // conditional for insufficient funds
+        //if(account.getBalance() > amount)
+
+        account.setBalance(account.getBalance() - amount.getAmount());
+        return accountRepository.save(account);
+    }
+
+
+    
 }
