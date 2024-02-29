@@ -3,8 +3,10 @@ package com.bankingapp.bankingapplication.Service;
 import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
 import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
 import com.bankingapp.bankingapplication.DTO.LoginCreds;
+import com.bankingapp.bankingapplication.Model.Account;
 import com.bankingapp.bankingapplication.Model.User;
-import com.bankingapp.bankingapplication.Repository.UserRepository;
+import com.bankingapp.bankingapplication.Repository.AccountRepository;
+import com.bankingapp.bankingapplication.Repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +15,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService {
+public class AuthService {
 
-    private final UserRepository userRepository;
+    private final AuthRepository authRepository;
+
+    private final AccountRepository accountRepository;
+
+    private Account account = new Account();
+
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-
+    public AuthService(AuthRepository authRepository, AccountRepository accountRepository) {
+        this.authRepository = authRepository;
+        this.accountRepository = accountRepository;
     }
 
     public User createUser(User user) {
         if (user.getEmail() != null && user.getPassword() != null &&
                 validateEmail(user.getEmail()) && validatePassword(user.getPassword())) {
-            if (!user.getEmail().equals(userRepository.findByEmail(user.getEmail()))) {
-                return userRepository.save(user);
+            if (!user.getEmail().equals(authRepository.findByEmail(user.getEmail()))) {
+                User sessionUser = authRepository.save(user);
+                System.out.println(sessionUser.getUserId());
+                if (authRepository.existsById(sessionUser.getUserId())) {
+
+                    account.setUserId(sessionUser.getUserId());
+                    //account.setBalance(0.00);
+                    System.out.println(account.getUserId());
+                    account = accountRepository.save(account);
+                }
+
+                return sessionUser;
             }
             else throw new EmailExistsInDbException("coolio");
         }
@@ -35,7 +52,7 @@ public class UserService {
     }
 
     public User loginUser(LoginCreds loginCreds){
-            User loggedUser = userRepository.findByEmail(loginCreds.getEmail());
+            User loggedUser = authRepository.findByEmail(loginCreds.getEmail());
             if (loggedUser != null && Objects.equals(loggedUser.getPassword(), loginCreds.getPassword())){
                 return loggedUser;
             }

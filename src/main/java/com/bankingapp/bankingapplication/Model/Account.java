@@ -1,50 +1,27 @@
 package com.bankingapp.bankingapplication.Model;
 
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLInsert;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+@Entity // maps user obj to db
+@Table(name="account") // tells that the db name is user
+@Data // tells use to make setters and getters implicitly
+@AllArgsConstructor // implicitly creates all args constructor
+@NoArgsConstructor // implicitly creates no args constructor
+@Getter
+@Setter
+@Configuration
 public class Account {
 
+    @Id // primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private int accountId;
-    private int userId;
+    @ColumnDefault("0.00")
     private double balance;
-
-    public int getAccountId(){
-
-        return this.accountId;
-    }
-
-    public double getBalance(){
-
-        return this.balance;
-    }
-
-    public int getUserId(){
-
-        return this.userId;
-    }
-
-    // setters
-    public void setDeposit(double amount){
-
-        this.balance += amount;
-    }
-
-    public void setWithdraw(double amount) {
-
-        if (amount <= this.balance)
-            this.balance -= amount;
-    }
-
-    public void setAccountId(int accountId) {
-
-        this.accountId = accountId;
-    }
-
-    public void setBalance(double balance) {
-
-        this.balance = balance;
-    }
-
-    public void setUserId(int userId) {
-
-        this.userId = userId;
-    }
+    private int UserId;
 }
