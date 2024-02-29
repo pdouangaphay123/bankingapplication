@@ -2,13 +2,13 @@ package com.bankingapp.bankingapplication.Controller;
 
 import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
 import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
-import com.bankingapp.bankingapplication.DTO.AmountDepositWithdraw;
 import com.bankingapp.bankingapplication.Model.Account;
-import com.bankingapp.bankingapplication.Model.User;
 import com.bankingapp.bankingapplication.Service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/account")
@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.*;
         allowedHeaders = "*", exposedHeaders = "*", allowCredentials = "true", maxAge = 244444)
 public class AccountController {
 
-    AccountService accountService;
+    private final AccountService accountService;
+    private Account account;
     @Autowired
     public AccountController(AccountService accountService){ this.accountService = accountService;}
 
-    @PostMapping("/balance")
-    public ResponseEntity<?> getBalanceHandler(@RequestBody User user){
+    @GetMapping("/balance")
+    public ResponseEntity<?> getBalanceHandler(Account account){
         try {
 
-             Account account = accountService.getBalance(user);
-            return ResponseEntity.ok(account.getBalance());
+            account = accountService.checkBalance(account);
+            return ResponseEntity.ok(account);
         } catch (EmailExistsInDbException | InvalidEmailPasswordException e){
             return ResponseEntity.badRequest().body(e);
         }

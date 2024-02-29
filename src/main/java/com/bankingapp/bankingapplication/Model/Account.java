@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 @NoArgsConstructor // implicitly creates no args constructor
 @Getter
 @Setter
-@Configuration
+//@Configuration
 public class Account {
 
     @Id // primary key
@@ -23,5 +23,5 @@ public class Account {
     private int accountId;
     @ColumnDefault("0.00")
     private double balance;
-    private int UserId;
+    private Integer userId;
 }
