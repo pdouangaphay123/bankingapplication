@@ -25,9 +25,8 @@ public class AccountService {
     public Account getBalance(User user){
 
         Account account = new Account();
-        int userId = authController.getSessionUserId();
         // if found if not found then throw exception
-        account = accountRepository.findByUserId(userId);
+        account = accountRepository.findByUserId(authController.getSessionUserId());
         return account;
     }
 

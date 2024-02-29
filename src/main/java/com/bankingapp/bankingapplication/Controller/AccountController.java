@@ -6,7 +6,6 @@ import com.bankingapp.bankingapplication.DTO.AmountDepositWithdraw;
 import com.bankingapp.bankingapplication.Model.Account;
 import com.bankingapp.bankingapplication.Model.User;
 import com.bankingapp.bankingapplication.Service.AccountService;
-import com.bankingapp.bankingapplication.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class AccountController {
     @Autowired
     public AccountController(AccountService accountService){ this.accountService = accountService;}
 
-    @PostMapping("/register")
+    @PostMapping("/balance")
     public ResponseEntity<?> getBalanceHandler(@RequestBody User user){
         try {
 

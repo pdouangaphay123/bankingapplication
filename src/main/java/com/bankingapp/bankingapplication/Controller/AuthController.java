@@ -5,7 +5,7 @@ import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordExc
 
 import com.bankingapp.bankingapplication.DTO.LoginCreds;
 import com.bankingapp.bankingapplication.Model.User;
-import com.bankingapp.bankingapplication.Service.UserService;
+import com.bankingapp.bankingapplication.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 allowedHeaders = "*", exposedHeaders = "*", allowCredentials = "true", maxAge = 244444)
 public class AuthController {
 
-    final UserService userService;
+    final AuthService authService;
 
     private User sessionUser;
 
@@ -24,12 +24,12 @@ public class AuthController {
         return sessionUser.getUserId();
     }
     @Autowired
-    public AuthController(UserService userService){ this.userService = userService;}
+    public AuthController(AuthService authService){ this.authService = authService;}
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user){
         try {
-            User registeredUser = userService.createUser(user);
+            User registeredUser = authService.createUser(user);
             return ResponseEntity.ok(registeredUser);
         } catch (EmailExistsInDbException | InvalidEmailPasswordException e){
             return ResponseEntity.badRequest().body(e);
@@ -39,7 +39,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> UserLogin(@RequestBody LoginCreds loginCreds){
         try {
-            User loginUser = userService.loginUser(loginCreds);
+            User loginUser = authService.loginUser(loginCreds);
             if (loginUser != null){
                 sessionUser = loginUser;
                 return ResponseEntity.ok(loginUser);
