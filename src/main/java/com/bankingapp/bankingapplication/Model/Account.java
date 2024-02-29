@@ -24,4 +24,17 @@ public class Account {
     @ColumnDefault("0.00")
     private double balance;
     private Integer userId;
+
+    public double setDeposit(double amount){
+        return this.balance += amount;
+    }
+
+    public double setWithdraw(double amount) {
+
+        if (amount < this.balance)
+            this.balance -= amount;
+        return this.balance;
+    }
+
+
 }
