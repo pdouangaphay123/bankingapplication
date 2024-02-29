@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin (origins = {"https://localhost:8080"},
-allowedHeaders = "*", exposedHeaders = "*", allowCredentials = "true", maxAge = 244444)
+    allowedHeaders = "*", exposedHeaders = "*", allowCredentials = "true", maxAge = 244444)
 public class AuthController {
 
     final AuthService authService;
@@ -37,14 +37,30 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> UserLogin(@RequestBody LoginCreds loginCreds){
+    public ResponseEntity<?> login(@RequestBody LoginCreds loginCreds){
         try {
-            User loginUser = authService.loginUser(loginCreds);
-            if (loginUser != null){
-                sessionUser = loginUser;
-                return ResponseEntity.ok(loginUser);
+            User authUser = authService.loginUser(loginCreds);
+            if (authUser != null){
+                sessionUser = authUser;
+                return ResponseEntity.ok(authUser);
             }
             return ResponseEntity.badRequest().body("user not logged in");
+        } catch (InvalidEmailPasswordException e){
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<?> logout(){
+        try {
+
+            if (sessionUser == null){
+                return ResponseEntity.ok("Have to be logged on to logout");
+            }
+            else {
+                sessionUser = null;
+                return  ResponseEntity.ok("Logout successfully");
+            }
         } catch (InvalidEmailPasswordException e){
             return ResponseEntity.badRequest().body(e);
         }
