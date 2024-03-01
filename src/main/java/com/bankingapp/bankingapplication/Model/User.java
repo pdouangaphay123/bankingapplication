@@ -1,7 +1,10 @@
 package com.bankingapp.bankingapplication.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity // maps user obj to db
 @Table(name="user") // tells that the db name is user
@@ -15,14 +18,14 @@ public class User {
     @Id // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private int userId;
+
     @Column(unique=true)
     private String email;
     private String password;
     private String customerName;
 
-//    @OneToOne
-//    @JoinColumn(name="user_id")
-//    private Account account;
-
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Account account; // a user can have multiple accounts
 
 }

@@ -1,8 +1,10 @@
 package com.bankingapp.bankingapplication.Controller;
 
 import com.bankingapp.bankingapplication.CustomException.EmailExistsInDbException;
+import com.bankingapp.bankingapplication.CustomException.InsufficientFundsException;
 import com.bankingapp.bankingapplication.CustomException.InvalidEmailPasswordException;
 import com.bankingapp.bankingapplication.DTO.AmountDepositWithdraw;
+import com.bankingapp.bankingapplication.DTO.AmountTransferTransaction;
 import com.bankingapp.bankingapplication.Model.Account;
 import com.bankingapp.bankingapplication.Service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,10 @@ public class AccountController {
     @GetMapping("/balance")
     public ResponseEntity<?> getBalanceController(Account account){
         try {
-
             account = accountService.checkBalance(account);
+
             return ResponseEntity.ok(account);
-        } catch (EmailExistsInDbException | InvalidEmailPasswordException e){ // need to work on custom exceptions
+        } catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e);
         }
     }
@@ -36,8 +38,8 @@ public class AccountController {
     @PostMapping("/deposit")
     public ResponseEntity<?> updateDepositController(@RequestBody AmountDepositWithdraw amount){
         try {
-
             account = accountService.updateDeposit(amount, account);
+
             return ResponseEntity.ok(account);
         } catch (EmailExistsInDbException | InvalidEmailPasswordException e){ // need to work on custom exceptions
             return ResponseEntity.badRequest().body(e);
@@ -45,12 +47,23 @@ public class AccountController {
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<?> updateWithdrawController(@RequestBody AmountDepositWithdraw amount){
+    public ResponseEntity<?> updateWithdrawController(@RequestBody AmountDepositWithdraw amountDepositWithdraw){
         try {
+            account = accountService.updateWithdraw(amountDepositWithdraw, account);
 
-            account = accountService.updateWithdraw(amount, account);
             return ResponseEntity.ok(account);
-        } catch (EmailExistsInDbException | InvalidEmailPasswordException e){ // need to work on custom exceptions
+        } catch (InsufficientFundsException e){
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<?> updateWithdrawController(@RequestBody AmountTransferTransaction amountTransferTransaction){
+        try {
+            account = accountService.updateTransfer(amountTransferTransaction, account);
+
+            return ResponseEntity.ok(account);
+        } catch (InsufficientFundsException e){
             return ResponseEntity.badRequest().body(e);
         }
     }

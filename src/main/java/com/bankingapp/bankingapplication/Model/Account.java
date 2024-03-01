@@ -1,12 +1,11 @@
 package com.bankingapp.bankingapplication.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.SQLInsert;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 @Entity // maps user obj to db
 @Table(name="account") // tells that the db name is user
@@ -20,21 +19,13 @@ public class Account {
 
     @Id // primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
-    private int accountId;
+    private long accountId;
+
     @ColumnDefault("0.00")
     private double balance;
-    private Integer userId;
 
-    public double setDeposit(double amount){
-        return this.balance += amount;
-    }
-
-    public double setWithdraw(double amount) {
-
-        if (amount < this.balance)
-            this.balance -= amount;
-        return this.balance;
-    }
-
-
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user; // foreign key referencing the user table, an account belongs to one user
 }

@@ -7,8 +7,11 @@ import com.bankingapp.bankingapplication.DTO.LoginCreds;
 import com.bankingapp.bankingapplication.Model.User;
 import com.bankingapp.bankingapplication.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,7 +23,7 @@ public class AuthController {
 
     private User sessionUser;
 
-    public int getSessionUserId(){
+    public Integer getSessionUserId(){
         return sessionUser.getUserId();
     }
     @Autowired
@@ -52,18 +55,12 @@ public class AuthController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<?> logout(){
-        try {
 
-            if (sessionUser == null){
-                return ResponseEntity.ok("Have to be logged on to logout");
-            }
+            if (sessionUser == null) throw new RuntimeException("No user logged on");
             else {
                 sessionUser = null;
-                return  ResponseEntity.ok("Logout successfully");
+                return ResponseEntity.ok("Logout successfully");
             }
-        } catch (InvalidEmailPasswordException e){
-            return ResponseEntity.badRequest().body(e);
-        }
     }
 
 
