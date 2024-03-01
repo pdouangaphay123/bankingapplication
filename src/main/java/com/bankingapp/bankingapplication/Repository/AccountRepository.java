@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer>{
 
-    public Account getByUserId(Integer userId);
+    Account getByUserUserId(long userId);
 }

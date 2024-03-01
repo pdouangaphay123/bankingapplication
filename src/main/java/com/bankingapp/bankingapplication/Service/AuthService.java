@@ -21,34 +21,33 @@ public class AuthService {
 
     private final AccountRepository accountRepository;
 
-    private Account account = new Account();
-
-
     @Autowired
     public AuthService(AuthRepository authRepository, AccountRepository accountRepository) {
         this.authRepository = authRepository;
         this.accountRepository = accountRepository;
     }
 
-    public User createUser(User user) {
+    public User createUser(User user) throws InvalidEmailPasswordException {
+
         if (user.getEmail() != null && user.getPassword() != null &&
                 validateEmail(user.getEmail()) && validatePassword(user.getPassword())) {
-            if (!user.getEmail().equals(authRepository.findByEmail(user.getEmail()))) {
-                User sessionUser = authRepository.save(user);
-                System.out.println(sessionUser.getUserId());
-                if (authRepository.existsById(sessionUser.getUserId())) {
 
-                    account.setUserId(sessionUser.getUserId());
-                    //account.setBalance(0.00);
-                    System.out.println(account.getUserId());
+            User tempValidationUser = authRepository.findByEmail(user.getEmail());
+            if (tempValidationUser == null) {
+
+                User registeredUser = authRepository.save(user);
+                if (authRepository.existsById(registeredUser.getUserId())) {
+                    Account account = new Account();
+                    account.setUser(registeredUser);
+                    account.getUser().setUserId(registeredUser.getUserId());
                     account = accountRepository.save(account);
-                }
 
-                return sessionUser;
+                    return registeredUser;
+                }
             }
-            else throw new EmailExistsInDbException("coolio");
+            else throw new EmailExistsInDbException("Email already exists");
         }
-        throw new InvalidEmailPasswordException("hi mom");
+        throw new InvalidEmailPasswordException("Invalid email or password");
     }
 
     public User loginUser(LoginCreds loginCreds){
@@ -56,7 +55,7 @@ public class AuthService {
             if (loggedUser != null && Objects.equals(loggedUser.getPassword(), loginCreds.getPassword())){
                 return loggedUser;
             }
-            throw new InvalidEmailPasswordException("yeet");
+            throw new InvalidEmailPasswordException("Invalid email or password");
     }
 
 
