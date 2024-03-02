@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity // maps user obj to db
 @Table(name="user") // tells that the db name is user
 @Data // tells use to make setters and getters implicitly
@@ -13,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor // implicitly creates no args constructor
 @Getter
 @Setter
+@Builder
 public class User {
 
     @Id // primary key
@@ -26,6 +25,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Account account; // a user can have multiple accounts
+    private Account account; // rn a user has only 1 account
 
 }
