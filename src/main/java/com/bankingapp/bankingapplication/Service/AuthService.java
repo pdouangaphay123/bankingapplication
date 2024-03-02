@@ -42,8 +42,8 @@ public class AuthService {
                     account.getUser().setUserId(registeredUser.getUserId());
                     account = accountRepository.save(account);
 
-                    return registeredUser;
                 }
+                return registeredUser;
             }
             else throw new EmailExistsInDbException("Email already exists");
         }

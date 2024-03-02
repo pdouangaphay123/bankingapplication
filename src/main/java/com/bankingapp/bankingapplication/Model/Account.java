@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor // implicitly creates no args constructor
 @Getter
 @Setter
+@Builder
 //@Configuration
 public class Account {
 
