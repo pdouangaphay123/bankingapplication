@@ -39,9 +39,8 @@ public class AuthService {
                 if (authRepository.existsById(registeredUser.getUserId())) {
                     Account account = new Account();
                     account.setUser(registeredUser);
-                    account.getUser().setUserId(registeredUser.getUserId());
-                    account = accountRepository.save(account);
 
+                    accountRepository.save(account);
                 }
                 return registeredUser;
             }
@@ -55,11 +54,11 @@ public class AuthService {
             if (loggedUser != null && Objects.equals(loggedUser.getPassword(), loginCreds.getPassword())){
                 return loggedUser;
             }
-            throw new InvalidEmailPasswordException("Invalid email or password");
+            else throw new InvalidEmailPasswordException("Invalid email or password");
     }
 
 
-        /* VALIDATION EMAIL AND PW REQUIREMENTS*/
+                                    /* VALIDATION EMAIL AND PW REQUIREMENTS*/
         // email validation regex pattern accepts from 6 to 16 email prefix chars A-z,a-z,0-9,_,. only
         // after the @ symbol accepts from range 2 to 8 chars a-z only, and after . accepts only a-z chars range 2 to 6.
         public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -80,22 +79,14 @@ public class AuthService {
         public static boolean validatePassword (String password){
 
             if (password == null) { // validates for if null password
-                //context.status(400);
-                //context.json("Password cannot be empty!");
                 return false;
             }
 
             if (password.length() < 5) { // password must be at least 5 characters
-                //context.status(400);
-                //context.json("Password must be at least 5 characters!");
                 return false;
             } else if (!Pattern.matches("[^ ]*", password)) { // password cannot contain space
-                //context.status(400);
-                //context.json("Password cannot contain space!");
                 return false;
             } else if (!password.matches(".*\\d.*")) { // password must have at least 1 digit
-                //context.status(400);
-                //context.json("Password must have at least 1 digit!");
                 return false;
             }
 
