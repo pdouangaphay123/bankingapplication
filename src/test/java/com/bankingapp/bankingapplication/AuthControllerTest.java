@@ -23,8 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-//@SpringBootTest
-//@RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
 

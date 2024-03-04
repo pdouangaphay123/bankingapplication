@@ -44,23 +44,17 @@ public class AuthServiceTest {
     @Test
     public void loginUser_success() throws Exception{ // mock it like it has a database
 
-        User loggedinUser = new User();
-        loggedinUser.setUserId(4);
-        loggedinUser.setEmail("janedoe@gmail.com");
-        loggedinUser.setPassword("password1");
-        loggedinUser.setCustomerName("Jane");
-        loggedinUser.setAccount(null);
-
         LoginCreds loginCreds = new LoginCreds();
         loginCreds.setEmail("janedoe@gmail.com");
         loginCreds.setPassword("password1"); // make a dto object
 
-        Mockito.when(authRepository.findByEmail(loginCreds.getEmail())).thenReturn(loggedinUser);
+        Mockito.when(authRepository.findByEmail(loginCreds.getEmail())).thenReturn(user1);
 
-        User user = authService.loginUser(loginCreds);
+        User loggedUser = authService.loginUser(loginCreds);
 
-        assertNotNull(user);
-        assertEquals("janedoe@gmail.com", user.getEmail());
+        assertNotNull(loggedUser);
+        assertEquals("janedoe@gmail.com", loggedUser.getEmail());
+        assertEquals("password1", loggedUser.getPassword());
     }
 
     @Test
@@ -68,25 +62,24 @@ public class AuthServiceTest {
         
         // assuming this is a new user  that passed the validations
         User mockUser = new User();
-        mockUser.setUserId(4);
-        mockUser.setEmail("jake007@gmail.com");
+        mockUser.setUserId(2);
+        mockUser.setEmail("phonexay@gmail.com");
         mockUser.setPassword("password1");
-        mockUser.setCustomerName("Jake");
+        mockUser.setCustomerName("Phonexay");
         mockUser.setAccount(null);
 
         Account account = new Account();
-        Mockito.when(authRepository.save(user2)).thenReturn(mockUser); // mocking return type after method call
-        if (authRepository.existsById(mockUser.getUserId())) {
-            account.setUser(mockUser);
-            account.getUser().setUserId(mockUser.getUserId());
-            account = accountRepository.save(account);
-        }
+        Mockito.when(authRepository.save(mockUser)).thenReturn(mockUser); // mocking return type after method call
 
-        User user = authService.createUser(mockUser);
+        User registeredUser = authService.createUser(mockUser);
 
-        assertNotNull(user);
-        assertEquals(mockUser.getUserId(), user.getUserId(), user2.getUserId());
+        assertNotNull(registeredUser);
+        assertEquals("Phonexay", mockUser.getCustomerName(), registeredUser.getCustomerName());
+        // account should be instantiated and not null with balance defaulted at 0.00
+        // and account id at 0 since there is no database in this test, no auto increment
         assertNotNull(account);
+        assertEquals(0.00, account.getBalance());
+        assertEquals(0, account.getAccountId());
     }
 }
 

@@ -58,11 +58,12 @@ public class AuthController {
     @DeleteMapping("/logout")
     public ResponseEntity<?> logout(){
 
-            if (sessionUser == null) throw new RuntimeException("No user logged on");
-            else {
-                sessionUser = null;
-                return ResponseEntity.ok("Logout successfully");
-            }
+        if (sessionUser == null) {
+            return ResponseEntity.badRequest().body("No user log on");
+        } else {
+            sessionUser = null;
+            return ResponseEntity.ok("Logout successfully");
+        }
     }
 
 
